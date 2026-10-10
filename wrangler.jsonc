@@ -3,6 +3,15 @@
   "name": "cffk",
   "compatibility_date": "2026-03-12",
   "main": "vike:server-entry",
+  "vars": {
+    "AUTH_SECRET": "9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "040938565cf04040a72b48c048dc766c"
+    }
+  ],
   "send_email": [
     {
       "name": "EMAIL"
@@ -12,19 +21,19 @@
     {
       "binding": "DB",
       "database_name": "cffk_db",
-      "migrations_dir": "database/migrations",
-      // "database_id": "6ccaa772-9379-494a-8548-7a1bb74e30da" // 一键部署必须注释/
+      "migrations_dir": "database/migrations"
+      // "database_id": "6ccaa772-9379-494a-8548-7a1bb74e30da" // 一键部署必须注释
     }
   ],
   "compatibility_flags": [
     "nodejs_compat",
-     "global_fetch_strictly_public"
+    "global_fetch_strictly_public"
   ],
   "triggers": {
     "crons": ["* * * * *"]
   },
   "observability": {
-		"enabled": true,
-		"head_sampling_rate": 0.1
-	},
+    "enabled": true,
+    "head_sampling_rate": 0.1
+  }
 }

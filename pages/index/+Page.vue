@@ -35,49 +35,67 @@
       </div>
     </section>
 
-    <section class="mx-auto w-full max-w-6xl flex-1 px-5 py-10 sm:py-12">
-      <div class="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h2 class="text-xl font-semibold tracking-normal">{{ messages.storefront.products }}</h2>
-          <p class="mt-1 text-sm text-muted-foreground">{{ query ? t(messages.storefront.relatedProducts, { count: visibleProducts.length }) : messages.storefront.fallbackSubtitle }}</p>
-        </div>
-        <div v-if="data.categories.length" class="flex max-w-full gap-2 overflow-x-auto pb-1" :aria-label="messages.storefront.categories">
-          <Button size="sm" :variant="selectedCategory === null ? 'default' : 'outline'" @click="selectedCategory = null">{{ messages.storefront.all }}</Button>
-          <Button
-            v-for="category in data.categories"
-            :key="category.id"
-            size="sm"
-            :variant="selectedCategory === category.id ? 'default' : 'outline'"
-            @click="selectedCategory = category.id"
-          >
-            {{ category.name }}
-          </Button>
-        </div>
-      </div>
+    <section class="mx-auto w-full max-w-6xl flex-1 px-5 py-8 sm:py-10">
+      <div class="flex flex-col gap-6 md:flex-row">
+        <!-- 左侧分类栏 -->
+        <aside class="md:w-48 md:shrink-0">
+          <h3 class="mb-3 hidden text-sm font-semibold text-muted-foreground md:block">{{ messages.storefront.categories }}</h3>
+          <div class="flex gap-2 overflow-x-auto pb-1 md:flex-col md:gap-1 md:overflow-visible md:pb-0" :aria-label="messages.storefront.categories">
+            <Button
+              size="sm"
+              class="shrink-0 justify-start md:w-full"
+              :variant="selectedCategory === null ? 'default' : 'ghost'"
+              @click="selectedCategory = null"
+            >
+              {{ messages.storefront.all }}
+            </Button>
+            <Button
+              v-for="category in data.categories"
+              :key="category.id"
+              size="sm"
+              class="shrink-0 justify-start md:w-full"
+              :variant="selectedCategory === category.id ? 'default' : 'ghost'"
+              @click="selectedCategory = category.id"
+            >
+              {{ category.name }}
+            </Button>
+          </div>
+        </aside>
 
-      <div v-if="visibleProducts.length" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <article v-for="product in visibleProducts" :key="product.id" class="group overflow-hidden rounded-lg border bg-card transition-shadow hover:shadow-lg">
-          <a :href="`/product/${product.slug}`" class="block">
-            <div class="relative aspect-4/3 overflow-hidden bg-muted">
-              <img :src="product.coverImage || defaultProductImage" :alt="product.name" class="size-full object-cover transition-transform duration-300 group-hover:scale-105" />
-              <Badge variant="secondary" class="absolute left-2 top-2 bg-background/90 text-xs backdrop-blur">{{ product.categoryName || messages.storefront.products }}</Badge>
+        <!-- 右侧商品区 -->
+        <div class="min-w-0 flex-1">
+          <div class="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-semibold tracking-normal">{{ messages.storefront.products }}</h2>
+              <p class="mt-1 text-sm text-muted-foreground">{{ query ? t(messages.storefront.relatedProducts, { count: visibleProducts.length }) : messages.storefront.fallbackSubtitle }}</p>
             </div>
-            <div class="flex min-h-28 flex-col p-3">
-              <h3 class="line-clamp-2 text-sm font-semibold tracking-normal">{{ product.name }}</h3>
-              <p v-if="product.subtitle" class="mt-1 line-clamp-1 text-xs text-muted-foreground">{{ product.subtitle }}</p>
-              <div class="mt-auto flex items-end justify-between gap-2 pt-3">
-                <span :class="stockClass(product)" class="text-xs">{{ stockLabel(product) }}</span>
-                <span class="shrink-0 text-lg font-semibold tabular-nums">¥{{ product.price }}</span>
-              </div>
-            </div>
-          </a>
-        </article>
-      </div>
+          </div>
 
-      <div v-else class="mt-6 border border-dashed bg-background px-6 py-16 text-center">
-        <PackageOpenIcon class="mx-auto size-8 text-muted-foreground" />
-        <h3 class="mt-4 text-base font-semibold">{{ messages.storefront.noProducts }}</h3>
-        <p class="mt-2 text-sm text-muted-foreground">{{ messages.storefront.noProductsDescription }}</p>
+          <div v-if="visibleProducts.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <article v-for="product in visibleProducts" :key="product.id" class="group overflow-hidden rounded-lg border bg-card transition-shadow hover:shadow-lg">
+              <a :href="`/product/${product.slug}`" class="block">
+                <div class="relative aspect-4/3 overflow-hidden bg-muted">
+                  <img :src="product.coverImage || defaultProductImage" :alt="product.name" class="size-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                  <Badge variant="secondary" class="absolute left-2 top-2 bg-background/90 text-xs backdrop-blur">{{ product.categoryName || messages.storefront.products }}</Badge>
+                </div>
+                <div class="flex min-h-28 flex-col p-3">
+                  <h3 class="line-clamp-2 text-sm font-semibold tracking-normal">{{ product.name }}</h3>
+                  <p v-if="product.subtitle" class="mt-1 line-clamp-1 text-xs text-muted-foreground">{{ product.subtitle }}</p>
+                  <div class="mt-auto flex items-end justify-between gap-2 pt-3">
+                    <span :class="stockClass(product)" class="text-xs">{{ stockLabel(product) }}</span>
+                    <span class="shrink-0 text-lg font-semibold tabular-nums">¥{{ product.price }}</span>
+                  </div>
+                </div>
+              </a>
+            </article>
+          </div>
+
+          <div v-else class="border border-dashed bg-background px-6 py-16 text-center">
+            <PackageOpenIcon class="mx-auto size-8 text-muted-foreground" />
+            <h3 class="mt-4 text-base font-semibold">{{ messages.storefront.noProducts }}</h3>
+            <p class="mt-2 text-sm text-muted-foreground">{{ messages.storefront.noProductsDescription }}</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -106,7 +124,6 @@ type Site = {
   subtitle: string | null;
   logo: string | null;
   notice: string | null;
-
   footerText: string | null;
 };
 
@@ -142,7 +159,6 @@ function stockClass(product: Product) {
   from {
     transform: translateX(0);
   }
-
   to {
     transform: translateX(-50%);
   }
